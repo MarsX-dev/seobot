@@ -1,0 +1,10 @@
+.DS_Store
+
+node_modules/
+dist/
+
+.npm
+.vscode
+
+.env
+.env.test
