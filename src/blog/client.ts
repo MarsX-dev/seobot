@@ -7,6 +7,7 @@ export class BlogClient {
   private _fetchPostCache: Cache<Blog.IArticle> = new Cache<Blog.IArticle>(60000);
 
   constructor(key: string) {
+    if (!key) throw Error('SEObot API key must be provided. You can use the DEMO key a8c58738-7b98-4597-b20a-0bb1c2fe5772 for testing');
     this._key = key;
   }
 

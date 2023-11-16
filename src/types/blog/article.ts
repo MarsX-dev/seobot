@@ -18,4 +18,5 @@ export interface IArticle {
   publishedAt: string;
   createdAt: string;
   relatedPosts: IRelatedPost[];
+  image: string;
 }
