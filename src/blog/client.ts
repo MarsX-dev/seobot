@@ -19,6 +19,7 @@ export class BlogClient {
       id: short.id,
       slug: short.s,
       headline: short.h,
+      metaDescription: short.d,
       image: short.i,
       createdAt: short.cr,
       category: short.c
