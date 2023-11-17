@@ -1,29 +1,51 @@
 import { Cache } from './cache';
 import { Blog } from '../types';
+import slugify from 'slugify';
 
 export class BlogClient {
   private _key: string;
-  private _fetchBaseCache: Cache<Blog.IArticleIndex[]> = new Cache<Blog.IArticleIndex[]>(60000);
-  private _fetchPostCache: Cache<Blog.IArticle> = new Cache<Blog.IArticle>(60000);
+  private _baseCache: Cache<Blog.IArticleIndex[]>;
+  private _articleCache: Cache<Blog.IArticle>;
 
-  constructor(key: string) {
+  constructor(key: string, ttl: number = 180_000) {
     if (!key) throw Error('SEObot API key must be provided. You can use the DEMO key a8c58738-7b98-4597-b20a-0bb1c2fe5772 for testing');
     this._key = key;
+    this._baseCache = new Cache<Blog.IArticleIndex[]>(ttl);
+    this._articleCache = new Cache<Blog.IArticle>(ttl);
   }
 
-  private async _fetchBase(): Promise<Blog.IArticleIndex[]> {
-    const base = await this._fetchBaseCache.get(async () => {
-      const response = await fetch(`https://seobot-blogs.s3.eu-north-1.amazonaws.com/${this._key}/system/base.json`, { cache: 'no-store' });
+  private _decompressIndex(short: Blog.IArticleIndexCompressed): Blog.IArticleIndex {
+    return {
+      id: short.id,
+      slug: short.s,
+      headline: short.h,
+      image: short.i,
+      createdAt: short.cr,
+      category: short.c
+        ? {
+            title: short.c.t,
+            slug: slugify(short.c.t, { lower: true, strict: true }),
+          }
+        : null,
+      tags: (short.tg || []).map(i => ({
+        title: i.t,
+        slug: slugify(i.t, { lower: true, strict: true }),
+      })),
+    };
+  }
 
-      const base = (await response.json()) as Blog.IArticleIndex[];
-      return base;
+  private async _fetchIndex(): Promise<Blog.IArticleIndex[]> {
+    const base = await this._baseCache.get(async () => {
+      const response = await fetch(`https://seobot-blogs.s3.eu-north-1.amazonaws.com/${this._key}/system/base.json`, { cache: 'no-store' });
+      const index = (await response.json()) as Blog.IArticleIndexCompressed[];
+      return index.map(i => this._decompressIndex(i)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     });
 
     return base;
   }
 
-  private async _fetchPost(id: string): Promise<Blog.IArticle> {
-    const post = await this._fetchPostCache.get(async () => {
+  private async _fetchArticle(id: string): Promise<Blog.IArticle> {
+    const post = await this._articleCache.get(async () => {
       const postData = await fetch(`https://seobot-blogs.s3.eu-north-1.amazonaws.com/${this._key}/blog/${id}.json`, { cache: 'no-store' });
       const post = (await postData.json()) as Blog.IArticle;
       return post;
@@ -32,19 +54,13 @@ export class BlogClient {
     return post;
   }
 
-  public async getArticles(page: number, limit: number = 10): Promise<{ articles: Blog.IArticle[]; total: number }> {
+  public async getArticles(page: number, limit: number = 10): Promise<{ articles: Blog.IArticleIndex[]; total: number }> {
     try {
-      const base = await this._fetchBase();
+      const base = await this._fetchIndex();
       const start = page * limit;
       const end = start + limit;
-      const articles = await Promise.all(
-        base.slice(start, end).map(async item => {
-          return item.id ? this._fetchPost(item.id) : null;
-        })
-      );
-
       return {
-        articles: articles.filter(item => item?.published) as Blog.IArticle[],
+        articles: base.slice(start, end),
         total: base.length,
       };
     } catch {
@@ -52,20 +68,15 @@ export class BlogClient {
     }
   }
 
-  public async getCategoryArticles(slug: string, page: number, limit: number = 10): Promise<{ articles: Blog.IArticle[]; total: number }> {
+  public async getCategoryArticles(slug: string, page: number, limit: number = 10): Promise<{ articles: Blog.IArticleIndex[]; total: number }> {
     try {
-      const base = await this._fetchBase();
-      const categoryIds = base.filter(item => item?.category?.slug == slug);
+      const base = await this._fetchIndex();
+      const categoryIds = base.filter(i => i.category?.slug == slug).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
       const start = page * limit;
       const end = start + limit;
-      const articles = await Promise.all(
-        categoryIds.slice(start, end).map(async item => {
-          return item?.id ? this._fetchPost(item?.id) : null;
-        })
-      );
 
       return {
-        articles: articles.filter(item => item?.published) as Blog.IArticle[],
+        articles: categoryIds.slice(start, end),
         total: categoryIds.length,
       };
     } catch {
@@ -73,24 +84,15 @@ export class BlogClient {
     }
   }
 
-  public async getTagArticles(slug: string, page: number, limit: number = 10): Promise<{ articles: Blog.IArticle[]; total: number }> {
+  public async getTagArticles(slug: string, page: number, limit: number = 10): Promise<{ articles: Blog.IArticleIndex[]; total: number }> {
     try {
-      const base = await this._fetchBase();
-      const tags = base.filter(obj => {
-        const itemTags = obj?.tags;
-        return itemTags?.some(item => item?.slug === slug);
-      });
-
+      const base = await this._fetchIndex();
+      const tags = base.filter(i => i.tags.some(item => item?.slug === slug)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
       const start = page * limit;
       const end = start + limit;
-      const articles = await Promise.all(
-        tags.slice(start, end).map(async item => {
-          return item?.id ? this._fetchPost(item?.id) : null;
-        })
-      );
 
       return {
-        articles: articles.filter(item => item?.published) as Blog.IArticle[],
+        articles: tags.slice(start, end),
         total: tags.length,
       };
     } catch {
@@ -100,10 +102,10 @@ export class BlogClient {
 
   public async getArticle(slug: string): Promise<Blog.IArticle | null> {
     try {
-      const base = await this._fetchBase();
+      const base = await this._fetchIndex();
       const record = base.find(item => item.slug === slug);
       if (!record) return null;
-      const post = await this._fetchPost(record.id);
+      const post = await this._fetchArticle(record.id);
       return post;
     } catch {
       return null;

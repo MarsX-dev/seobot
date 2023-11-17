@@ -2,7 +2,7 @@ export class Cache<T> {
   private cache: T | null = null;
   private expiresAt: number | null = null;
 
-  constructor(private ttl: number = 60000) {}
+  constructor(private ttl: number = 180_000) {}
 
   async get(fetchFunction: () => Promise<T>): Promise<T> {
     const now = Date.now();

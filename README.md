@@ -8,13 +8,63 @@ Elevate your website by integrating SEObot's Blog API. This setup allows you to 
 
 Visit the [DevHunt Blog](https://devhunt.org/blog?utm_source=github) to check out an example of SEObot Blog API integration.
 
+Checkout Next.js integration example at [seobot-nextjs-blog](https://github.com/MarsX-dev/seobot-nextjs-blog) repository.
+
 ## Prerequisites
 
-SEObot API Key - you can find the key in your website settings on [app.seobotai.com](https://app.seobotai.com/?utm_source=github)
+**SEObot API Key** - you can find the API key in settings on [app.seobotai.com](https://app.seobotai.com/?utm_source=github)
+
+## Features
+
+- Fetch articles by page and limit.
+- Retrieve articles based on categories or tags.
+- Access detailed information about a specific article.
+- Built-in caching mechanism for efficient data retrieval.
+
+## Installation
+
+To install the package, run:
+
+```bash
+npm install seobot
+```
+
+## Usage
+
+```typescript
+import { BlogClient } from 'seobot';
+
+const client = new BlogClient('your_seobot_api_key_here');
+```
+
+### Fetching Articles
+
+```typescript
+const articles = await client.getArticles(page, limit);
+```
+
+### Fetching Articles by Category
+
+```typescript
+ const articles = await client.getCategoryArticles(categorySlug, page, limit);
+```
+
+### Fetching Articles by Tag
+
+```typescript
+const articles = await client.getTagArticles(tagSlug, page, limit);
+```
+
+### Getting a Single Article
+
+```typescript
+const article = await client.getArticle(slug);
+```
+
 
 ## Contributing
 
-If you find any bugs or have feature suggestions, please open an issue or submit a pull request.
+Contributions are welcome. Please open an issue or submit a pull request for any bugs, features, or improvements.
 
 ## License
 
