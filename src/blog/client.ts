@@ -21,6 +21,7 @@ export class BlogClient {
       headline: short.h,
       metaDescription: short.d,
       image: short.i,
+      readingTime: short.rt,
       createdAt: short.cr,
       category: short.c
         ? {
