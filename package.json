@@ -1,6 +1,6 @@
 {
   "name": "seobot",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Client library for the SEObot API",
   "main": "dist/index.js",
   "files": [

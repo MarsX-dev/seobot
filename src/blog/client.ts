@@ -1,17 +1,12 @@
-import { Cache } from './cache';
 import { Blog } from '../types';
 import slugify from 'slugify';
 
 export class BlogClient {
   private _key: string;
-  private _baseCache: Cache<Blog.IArticleIndex[]>;
-  private _articleCache: Cache<Blog.IArticle>;
 
-  constructor(key: string, ttl: number = 180_000) {
+  constructor(key: string) {
     if (!key) throw Error('SEObot API key must be provided. You can use the DEMO key a8c58738-7b98-4597-b20a-0bb1c2fe5772 for testing');
     this._key = key;
-    this._baseCache = new Cache<Blog.IArticleIndex[]>(ttl);
-    this._articleCache = new Cache<Blog.IArticle>(ttl);
   }
 
   private _decompressIndex(short: Blog.IArticleIndexCompressed): Blog.IArticleIndex {
@@ -37,22 +32,14 @@ export class BlogClient {
   }
 
   private async _fetchIndex(): Promise<Blog.IArticleIndex[]> {
-    const base = await this._baseCache.get(async () => {
-      const response = await fetch(`https://cdn.seobotai.com/${this._key}/system/base.json`, { cache: 'no-store' });
-      const index = (await response.json()) as Blog.IArticleIndexCompressed[];
-      return index.map(i => this._decompressIndex(i)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-    });
-
-    return base;
+    const response = await fetch(`https://cdn.seobotai.com/${this._key}/system/base.json`, { cache: 'no-store' });
+    const index = (await response.json()) as Blog.IArticleIndexCompressed[];
+    return index.map(i => this._decompressIndex(i)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
 
   private async _fetchArticle(id: string): Promise<Blog.IArticle> {
-    const post = await this._articleCache.get(async () => {
-      const postData = await fetch(`https://cdn.seobotai.com/${this._key}/blog/${id}.json`, { cache: 'no-store' });
-      const post = (await postData.json()) as Blog.IArticle;
-      return post;
-    });
-
+    const postData = await fetch(`https://cdn.seobotai.com/${this._key}/blog/${id}.json`, { cache: 'no-store' });
+    const post = (await postData.json()) as Blog.IArticle;
     return post;
   }
 
