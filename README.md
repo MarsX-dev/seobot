@@ -23,7 +23,7 @@ Checkout Next.js integration example at [seobot-nextjs-blog](https://github.com/
 
 ## Installation
 
-To install the package, run:
+To install the [seobot npm package](https://www.npmjs.com/package/seobot), run:
 
 ```bash
 npm install seobot
