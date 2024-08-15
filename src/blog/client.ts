@@ -18,6 +18,7 @@ export class BlogClient {
       image: short.i,
       readingTime: short.rt,
       createdAt: short.cr,
+      updatedAt: short.up,
       category: short.c
         ? {
             title: short.c.t,

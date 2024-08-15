@@ -6,6 +6,7 @@ export interface IArticleIndexCompressed {
   i: string;              // image
   rt: number;             // readingTime
   cr: string;             // createdAt
+  up: string;             // updatedAt
   c?: { t: string; };     // category
   tg?: { t: string; }[];  // tags
 }
@@ -18,6 +19,7 @@ export interface IArticleIndex {
   image: string;
   readingTime: number,
   createdAt: string;
+  updatedAt: string;
   category: { title: string; slug: string; } | null;
   tags: { title: string; slug: string; }[];
 }
