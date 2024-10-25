@@ -33,13 +33,13 @@ export class BlogClient {
   }
 
   private async _fetchIndex(): Promise<Blog.IArticleIndex[]> {
-    const response = await fetch(`https://cdn.seobotai.com/${this._key}/system/base.json`, { cache: 'no-store' });
+    const response = await fetch(`https://cdn.seobotai.com/${this._key}/system/base.json`);
     const index = (await response.json()) as Blog.IArticleIndexCompressed[];
     return index.map(i => this._decompressIndex(i)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
 
   private async _fetchArticle(id: string): Promise<Blog.IArticle> {
-    const postData = await fetch(`https://cdn.seobotai.com/${this._key}/blog/${id}.json`, { cache: 'no-store' });
+    const postData = await fetch(`https://cdn.seobotai.com/${this._key}/blog/${id}.json`);
     const post = (await postData.json()) as Blog.IArticle;
     return post;
   }
