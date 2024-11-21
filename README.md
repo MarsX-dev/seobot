@@ -40,18 +40,21 @@ const client = new BlogClient('your_seobot_api_key_here');
 ### Fetching Articles
 
 ```typescript
+// Note: page parameter is zero-based (0 = first page, 1 = second page, etc.)
 const articles = await client.getArticles(page, limit);
 ```
 
 ### Fetching Articles by Category
 
 ```typescript
+// Note: page parameter is zero-based (0 = first page, 1 = second page, etc.)
  const articles = await client.getCategoryArticles(categorySlug, page, limit);
 ```
 
 ### Fetching Articles by Tag
 
 ```typescript
+// Note: page parameter is zero-based (0 = first page, 1 = second page, etc.)
 const articles = await client.getTagArticles(tagSlug, page, limit);
 ```
 
