@@ -64,6 +64,47 @@ const articles = await client.getTagArticles(tagSlug, page, limit);
 const article = await client.getArticle(slug);
 ```
 
+## Data Types
+
+```typescript
+interface IArticle {
+  id: string;
+  slug: string;
+  headline: string;
+  metaDescription: string;
+  metaKeywords: string;
+  tags: ITag[];
+  category: ICategory;
+  readingTime: number;
+  html: string;
+  outline: string;
+  deleted: boolean;
+  published: boolean;
+  publishedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  relatedPosts: IRelatedPost[];
+  image: string;
+}
+
+interface ITag {
+  id: string;
+  title: string;
+  slug: string;
+}
+
+interface ICategory {
+  id: string;
+  title: string;
+  slug: string;
+}
+
+interface IRelatedPost {
+  id: string;
+  headline: string;
+  slug: string;
+}
+```
 
 ## Contributing
 
