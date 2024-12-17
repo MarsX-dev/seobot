@@ -12,6 +12,7 @@ export interface IArticle {
   category: ICategory;
   readingTime: number;
   html: string;
+  markdown: string;
   outline: string;
   deleted: boolean;
   published: boolean;
