@@ -7,8 +7,8 @@ export interface IArticleIndexCompressed {
   rt: number;             // readingTime
   cr: string;             // createdAt
   up: string;             // updatedAt
-  c?: { t: string; };     // category
-  tg?: { t: string; }[];  // tags
+  c?: { t: string; s: string; };     // category
+  tg?: { t: string; s: string; }[];  // tags
 }
 
 export interface IArticleIndex {

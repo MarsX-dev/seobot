@@ -1,5 +1,6 @@
 import { Blog } from '../types';
 import slugify from 'slugify';
+import transliteration from 'transliteration';
 
 export class BlogClient {
   private _key: string;
@@ -22,12 +23,12 @@ export class BlogClient {
       category: short.c
         ? {
             title: short.c.t,
-            slug: slugify(short.c.t, { lower: true, strict: true }),
+            slug: short.c.s || slugify(transliteration.transliterate(short.c.t), { lower: true, strict: true }),
           }
         : null,
       tags: (short.tg || []).map(i => ({
         title: i.t,
-        slug: slugify(i.t, { lower: true, strict: true }),
+        slug: i.s || slugify(transliteration.transliterate(i.t), { lower: true, strict: true }),
       })),
     };
   }
