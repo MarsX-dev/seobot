@@ -21,4 +21,7 @@ export interface IArticle {
   updatedAt: string;
   relatedPosts: IRelatedPost[];
   image: string;
+  isTool?: boolean;
+  isVideo?: boolean;
+  isNews?: boolean;
 }

@@ -9,6 +9,9 @@ export interface IArticleIndexCompressed {
   up: string;             // updatedAt
   c?: { t: string; s: string; };     // category
   tg?: { t: string; s: string; }[];  // tags
+  t?: boolean;
+  v?: boolean;
+  n?: boolean;
 }
 
 export interface IArticleIndex {
@@ -22,4 +25,7 @@ export interface IArticleIndex {
   updatedAt: string;
   category: { title: string; slug: string; } | null;
   tags: { title: string; slug: string; }[];
+  isTool?: boolean;
+  isVideo?: boolean;
+  isNews?: boolean;
 }

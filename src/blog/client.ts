@@ -36,6 +36,9 @@ export class BlogClient {
         title: i.t,
         slug: i.s || slugify(transliterate(i.t), { lower: true, strict: true }),
       })),
+      isTool: short.t,
+      isVideo: short.v,
+      isNews: short.n,
     };
   }
 
