@@ -8,7 +8,14 @@ Elevate your website by integrating SEObot's Blog API. This setup allows you to 
 
 Visit the [DevHunt Blog](https://devhunt.org/blog?utm_source=github) to check out an example of SEObot Blog API integration.
 
-Checkout Next.js integration example at [seobot-nextjs-blog](https://github.com/MarsX-dev/seobot-nextjs-blog) repository.
+
+## AI Coding Agents & Lovable Integration
+
+Looking to integrate SEObot into your Next.js project using an AI coding agent (**Lovable, Cursor, Copilot, Claude, etc.**)?
+
+Use the ready-made LLM instruction guide in the Next.js example repo - it includes all types, API usage, SSR page code, sitemap setup, and key gotchas in a single copy-paste prompt:
+
+👉 **[SEObot: Next.js SSR Integration Guide for AI Agents](https://github.com/MarsX-dev/seobot-nextjs-blog?tab=readme-ov-file#instructions-for-lovable-and-other-ai-coding-agents)**
 
 ## Prerequisites
 
