@@ -77,6 +77,7 @@ const article = await client.getArticle(slug);
 interface IArticle {
   id: string;
   slug: string;
+  title: string;
   headline: string;
   metaDescription: string;
   metaKeywords: string;

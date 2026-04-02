@@ -20,6 +20,7 @@ export class BlogClient {
     return {
       id: short.id,
       slug: short.s,
+      title: short.st || short.h,
       headline: short.h,
       metaDescription: short.d,
       image: short.i,

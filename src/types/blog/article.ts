@@ -5,6 +5,7 @@ import { ITag } from "./tag";
 export interface IArticle {
   id: string;
   slug: string;
+  title: string;
   headline: string;
   metaDescription: string;
   metaKeywords: string;

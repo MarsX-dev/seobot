@@ -1,5 +1,6 @@
 export interface IArticleIndexCompressed {
   id: string;             // id
+  st?: string;             // title
   h: string;              // headline
   d: string;              // description
   s: string;              // slug
@@ -17,6 +18,7 @@ export interface IArticleIndexCompressed {
 export interface IArticleIndex {
   id: string;
   slug: string;
+  title: string;
   headline: string;
   metaDescription: string;
   image: string;
